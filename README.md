@@ -1,37 +1,58 @@
-# Commit-Prey-Affecio-hacks-2026
-
-Privacy-first trust layer for online dating: detects fake photos and romance-scam chats, entirely in the browser. Built for AFFECIO HACKS '26.
-
 # TrustLens
 
-> Trust before connection.
+**Same vibes. Less risks. More real.**
 
-## Live Demo
+Privacy-first safety layer for dating & social discovery — Affecio Hacks ’26 · *Trust Before Connection*.
 
-Production app: **[https://trustlens-lovat.vercel.app](https://trustlens-lovat.vercel.app)**
+## Live demo
 
-(Also available at [https://trustlens-arshhqs-projects.vercel.app](https://trustlens-arshhqs-projects.vercel.app).)
+**https://trustlens-lovat.vercel.app**
 
-TrustLens is a privacy-first safety layer for online dating and social discovery. It helps users spot fake profiles and romance scams *before* they get emotionally or financially invested.
+## What’s in this repo
 
-**Built for AFFECIO HACKS '26 — Problem Statement #4: Trust Before Connection**
+Expo + React Native app (root) with:
 
-## Features
-- **Photo Authenticity Check:** Error Level Analysis, metadata and pixel checks, all client-side
-- **Scam Chat Detector:** flags love-bombing, off-platform requests, urgency and money asks (works offline; Claude API optional)
-- **Live Risk Meter:** real-time trust score with clear, gentle warnings
-- **Privacy by Design:** photos never leave the device; only SHA-256 hashes are used
+- Onboarding + **demo mode** (no backend required)
+- Profile & verification clarity (simulated badges clearly labeled)
+- **Live Message Guard** (on-device rules; optional secure Gemini proxy)
+- Trust Insights + **Trust Sandbox** scenarios
+- **Privacy Shield**, **Safe Meet Planner**, **VibeSync**
 
-## Tech Stack
-Next.js 14 (App Router), TypeScript, Tailwind CSS, HTML5 Canvas API, Web Crypto API, Claude API (optional), Lucide React, Framer Motion, Zod, Vercel
+Archived Next.js web MVP lives under [`web/`](./web) (that’s what’s deployed at the live link above).
 
-## Run locally
+### Run the mobile app
+
 ```bash
-pnpm install
-pnpm dev
+npm install
+npx expo start
 ```
 
-Optional: add `ANTHROPIC_API_KEY` to `.env.local` for Claude-powered chat analysis. Without it, the offline detector still works for demos.
+Then open iOS Simulator, Android emulator, Expo Go, or press `w` for web.
 
-## Team — Commit&Prey
-* Arshdeep
+Optional Message Guard proxy (server-side Gemini key only):
+
+```bash
+# .env (gitignored) — never put GEMINI_API_KEY in EXPO_PUBLIC_*
+# EXPO_PUBLIC_AI_PROXY_URL=http://127.0.0.1:8787/analyze-message
+# GEMINI_API_KEY=…
+npm run server:analyze
+```
+
+Without credentials, use **Enter demo mode** — Message Guard still works offline via rules.
+
+### Structure
+
+```
+app/           Expo Router screens (auth, tabs, chat, sandbox, …)
+components/    UI + feature components
+lib/           supabase, safety-analysis, config
+server/        secure Gemini analyze proxy
+store/         zustand auth / settings / chat
+data/          demo profiles, chats, scenarios
+constants/     design tokens
+web/           archived Next.js TrustLens web app
+```
+
+### Team
+
+Commit&Prey · Affecio Hacks ’26
