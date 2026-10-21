@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { analyzeChatLocally } from "@/lib/localChatAnalysis";
 import {
   AnalyzeChatRequestSchema,
   ChatAnalysisSchema,
@@ -51,15 +52,19 @@ export async function POST(request: Request) {
       );
     }
 
-    const apiKey = process.env.ANTHROPIC_API_KEY;
+    const rawKey = process.env.ANTHROPIC_API_KEY?.trim() ?? "";
+    const apiKey =
+      rawKey &&
+      !/^(your_key_here|sk-ant-x+|xxx+|changeme|placeholder)$/i.test(rawKey)
+        ? rawKey
+        : "";
+
+    // No real Anthropic key → offline heuristic analyzer (demo-ready)
     if (!apiKey) {
-      return NextResponse.json(
-        {
-          error:
-            "ANTHROPIC_API_KEY is not configured. Add it to .env.local and restart the server.",
-        },
-        { status: 500 }
+      const local = ChatAnalysisSchema.parse(
+        analyzeChatLocally(parsed.data.chat)
       );
+      return NextResponse.json(local);
     }
 
     const anthropicRes = await fetch("https://api.anthropic.com/v1/messages", {
@@ -85,10 +90,11 @@ export async function POST(request: Request) {
     if (!anthropicRes.ok) {
       const errText = await anthropicRes.text();
       console.error("Anthropic API error:", anthropicRes.status, errText);
-      return NextResponse.json(
-        { error: "Upstream analysis failed. Please try again." },
-        { status: 502 }
+      // Fall back so demos still work if the key is invalid / quota'd
+      const local = ChatAnalysisSchema.parse(
+        analyzeChatLocally(parsed.data.chat)
       );
+      return NextResponse.json(local);
     }
 
     const anthropicJson: unknown = await anthropicRes.json();
@@ -107,29 +113,29 @@ export async function POST(request: Request) {
       .join("\n");
 
     if (!text) {
-      return NextResponse.json(
-        { error: "Empty response from model." },
-        { status: 502 }
+      const local = ChatAnalysisSchema.parse(
+        analyzeChatLocally(parsed.data.chat)
       );
+      return NextResponse.json(local);
     }
 
     let jsonValue: unknown;
     try {
       jsonValue = JSON.parse(stripMarkdownFences(text));
     } catch {
-      return NextResponse.json(
-        { error: "Model returned non-JSON. Please try again." },
-        { status: 502 }
+      const local = ChatAnalysisSchema.parse(
+        analyzeChatLocally(parsed.data.chat)
       );
+      return NextResponse.json(local);
     }
 
     const analysis = ChatAnalysisSchema.safeParse(jsonValue);
     if (!analysis.success) {
       console.error("Zod validation failed:", analysis.error.flatten());
-      return NextResponse.json(
-        { error: "Analysis shape invalid. Please try again." },
-        { status: 502 }
+      const local = ChatAnalysisSchema.parse(
+        analyzeChatLocally(parsed.data.chat)
       );
+      return NextResponse.json(local);
     }
 
     const result: ChatAnalysis = analysis.data;
