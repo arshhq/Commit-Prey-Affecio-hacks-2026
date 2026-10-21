@@ -6,7 +6,11 @@ Privacy-first trust layer for online dating: detects fake photos and romance-sca
 
 > Trust before connection.
 
-**Live demo:** [https://trustlens-lovat.vercel.app](https://trustlens-lovat.vercel.app)
+## Live Demo
+
+Production app: **[https://trustlens-lovat.vercel.app](https://trustlens-lovat.vercel.app)**
+
+(Also available at [https://trustlens-arshhqs-projects.vercel.app](https://trustlens-arshhqs-projects.vercel.app).)
 
 TrustLens is a privacy-first safety layer for online dating and social discovery. It helps users spot fake profiles and romance scams *before* they get emotionally or financially invested.
 
