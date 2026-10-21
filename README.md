@@ -8,6 +8,8 @@ Privacy-first safety layer for dating & social discovery — Affecio Hacks ’26
 
 **https://trustlens-lovat.vercel.app**
 
+(Expo TrustLens web — click **Enter demo mode**. Hard-refresh if you still see the old Next.js page.)
+
 ## What’s in this repo
 
 Expo + React Native app (root) with:

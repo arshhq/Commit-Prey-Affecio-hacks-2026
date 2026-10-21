@@ -44,7 +44,8 @@
     "typecheck": "tsc --noEmit",
     "test:safety": "node scripts/test-safety.mjs",
     "server:analyze": "node server/analyze-message.mjs",
-    "doctor": "npx expo-doctor"
+    "doctor": "npx expo-doctor",
+    "build:web": "expo export --platform web"
   },
   "private": true
 }
